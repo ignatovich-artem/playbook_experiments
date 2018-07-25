@@ -1,0 +1,12 @@
+---
+  - name: Enable and restart uWSGI Emperor
+    systemd:
+      name: emperor.uwsgi
+      enabled: yes
+      state: restarted
+
+  - name: Enable and restart nginx
+    systemd:
+      name: nginx
+      enabled: yes
+      state: restarted

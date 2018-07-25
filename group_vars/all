@@ -1,0 +1,13 @@
+---
+ansible_python_interpreter: /usr/bin/python3
+server_name: 192.168.60.10
+port: 8002
+project_name: django_prject_2
+base_dir: '/srv/{{ project_name }}'
+site_name: mysite
+site_dir: '{{ base_dir }}/{{ site_name }}'
+uid: www-data
+gid: www-data
+nginx_dir: /etc/nginx/sites-enabled
+uwsgi_dir: /etc/uwsgi-emperor/vassals
+processes: 2

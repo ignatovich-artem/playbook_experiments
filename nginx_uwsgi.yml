@@ -3,92 +3,10 @@
   hosts: ngserv2
   gather_facts: false
   become: yes
-
-  vars:
-    server_name: 192.168.60.10
-    project_name: django_prj2
-    base_dir: '/srv/{{ project_name }}'
-    site_name: mysite
-    site_dir: '{{ base_dir }}/{{ site_name }}'
-    uid: www-data
-    gid: www-data
-    nginx_dir: /etc/nginx/sites-enabled
-    uwsgi_dir: /etc/uwsgi-emperor/vassals
-
-  tasks:
-  - name: Install packages
-    apt: name={{ item }} state=present update_cache=true
-    loop:
-     - nginx
-     - virtualenv
-     - uwsgi
-     - uwsgi-emperor
-     - uwsgi-plugin-python3
-
-  - name: Create a virtual environment
-    command: "virtualenv -p /usr/bin/python3 '{{ base_dir}}'"
-
-  - name: Install Django
-    command: "'{{ base_dir }}/bin/pip' install django"
-
-  - name: Deploy site
-    copy:
-      src: 'projects/{{ site_name }}'
-      dest: '{{ base_dir }}'
-
-  - name: Set permissions
-    file:
-      path: '{{ base_dir }}'
-      owner: '{{ uid }}'
-      group: '{{ gid }}'
-      state: directory
-      recurse: yes
-
-  - name: Config nginx
-    template:
-      src: templates/nginx.conf.j2
-      dest: '{{ base_dir }}/{{ project_name }}-nginx.conf'
-      owner: root
-      group: root
-      mode: 0644
-
-  - name: Config uwsgi
-    template:
-      src: templates/uwsgi.ini.j2
-      dest: '{{ base_dir }}/{{ project_name }}-uwsgi.ini'
-      owner: root
-      group: root
-      mode: 0644
-
-  - name: Make link for nginx conf
-    file:
-      src: '{{ base_dir }}/{{ project_name }}-nginx.conf'
-      dest: '{{ nginx_dir }}/{{ project_name }}.conf'
-      state: link
-
-  - name: Make link for uwsgi conf
-    file:
-      src: '{{ base_dir }}/{{ project_name }}-uwsgi.ini'
-      dest: '{{ uwsgi_dir }}/{{ project_name }}.ini'
-      state: link
-
-  - name: Create emperor.uwsgi service
-    copy:
-      src: templates/emperor.uwsgi.service
-      dest: /etc/systemd/system/emperor.uwsgi.service
-      owner: root
-      group: root
-      mode: 0644
-
-  - name: Enable and restart uWSGI Emperor
-    systemd:
-      name: emperor.uwsgi
-      enabled: yes
-      state: restarted
-
-  - name: Enable and restart nginx
-    systemd:
-      name: nginx
-      enabled: yes
-      state: restarted
-
+  
+  roles:
+    - { role: install_packages }
+    - { role: config_project_env }
+    - { role: config_nginx_uwsgi }
+    - { role: add_service }
+    - { role: start_services }

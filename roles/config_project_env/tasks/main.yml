@@ -1,0 +1,21 @@
+---
+  - name: Create a virtual environment and Install Django
+    pip:
+      virtualenv_command: virtualenv
+      virtualenv_python: python3
+      virtualenv: '{{ base_dir}}'
+      state: present
+      name: django
+
+  - name: Deploy site
+    copy:
+      src: 'files/{{ site_name }}'
+      dest: '{{ base_dir }}'
+
+  - name: Set permissions
+    file:
+      path: '{{ base_dir }}'
+      owner: '{{ uid }}'
+      group: '{{ gid }}'
+      state: directory
+      recurse: yes

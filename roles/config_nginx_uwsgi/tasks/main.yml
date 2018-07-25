@@ -1,0 +1,28 @@
+---
+  - name: Config nginx
+    template:
+      src: templates/nginx.conf.j2
+      dest: '{{ base_dir }}/{{ project_name }}-nginx.conf'
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Config uwsgi
+    template:
+      src: templates/uwsgi.ini.j2
+      dest: '{{ base_dir }}/{{ project_name }}-uwsgi.ini'
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Make link for nginx conf
+    file:
+      src: '{{ base_dir }}/{{ project_name }}-nginx.conf'
+      dest: '{{ nginx_dir }}/{{ project_name }}.conf'
+      state: link
+
+  - name: Make link for uwsgi conf
+    file:
+      src: '{{ base_dir }}/{{ project_name }}-uwsgi.ini'
+      dest: '{{ uwsgi_dir }}/{{ project_name }}.ini'
+      state: link
