@@ -5,8 +5,8 @@
   become: yes
   
   roles:
-    - { role: install_packages }
-    - { role: config_project_env }
-    - { role: config_nginx_uwsgi }
-    - { role: add_service }
-    - { role: start_services }
+    - install_packages
+    - config_project_env
+    - config_nginx_uwsgi
+    - add_service
+    - start_services
