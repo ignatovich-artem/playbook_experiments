@@ -3,10 +3,17 @@
   hosts: ngserv2
   gather_facts: false
   become: yes
-  
-  roles:
-    - install_packages
-    - config_project_env
-    - config_nginx_uwsgi
-    - add_service
-    - start_services
+
+  tasks:
+  - name: Import roles
+    include_role: 
+      name: '{{ role_name }}'
+    loop:
+      - install_packages
+      - config_project_env
+      - config_nginx_uwsgi
+      - add_service
+      - start_services
+    loop_control:
+      loop_var: role_name
+    when: ansible_distribution == 'Debian'
