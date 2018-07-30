@@ -1,8 +1,8 @@
 ---
 - name: Install and configure nginx and uwsgi in emperor mode and import simple django project
   hosts: ngserv2
-  gather_facts: false
   become: yes
+  vars_files: vars/config.yml
 
   tasks:
   - name: Import roles
